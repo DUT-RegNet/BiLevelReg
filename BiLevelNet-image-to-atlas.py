@@ -24,10 +24,7 @@ class Tester(object):
             self.sess.run(tf.global_variables_initializer())
 
     def test(self):
-        atlas = np.load('D:\PycharmProjects\代码开源\AnatomySketch-1.0\Plugins\data\\atlas_norm.npz')
-        img1 = atlas['vol']
-        img1 = np.reshape(img1, img1.shape + (1,))
-
+        img1 = load_nii('data\\atlas_norm.nii.gz')
         img2= load_nii(self.args.vol_name)
         images = np.array([img1, img2])  # shape(2, h, w, c, 1)
         images = np.reshape(images, (1,) + images.shape)  # shape(1, 2, h, w, c, 1)
@@ -35,30 +32,22 @@ class Tester(object):
         # Save Vol
         vol = self.sess.run(self.y, feed_dict={self.images_tf: images})
         vol = nib.Nifti1Image(vol[0, :, :, :, :], np.eye(4))
-        nib.save(vol, 'D:\PycharmProjects\代码开源\AnatomySketch-1.0\Plugins\data\warped_vol.nii.gz')
+        nib.save(vol, 'data\warped_vol.nii.gz')
 
 
 
 if __name__ == '__main__':
 
-    # 5 保存临时文件
-    file_write_obj = open("D:\\test_run_1.txt", 'w')
-    file_write_obj.write("Done")
-
-    # 3 运算
     parser = argparse.ArgumentParser()
-    parser.add_argument('--resume', type=str, default='D:\PycharmProjects\代码开源\AnatomySketch-1.0\Plugins\Model\model_40.ckpt',
+    parser.add_argument('--resume', type=str, default='Model\model_40.ckpt',
                         help='Learned parameter checkpoint file [None]')
-    parser.add_argument('--vol_name', type=str, default="D:\PycharmProjects\代码开源\AnatomySketch-1.0\Plugins\data\\brain_scan1_vol.nii.gz")
+    parser.add_argument('--vol_name', type=str, default="data\\brain_scan1_vol.nii.gz")
     args = parser.parse_args()
     for key, item in vars(args).items():
         print(f'{key} : {item}')
     os.environ['CUDA_VISIBLE_DEVICES'] = '0'
     tester = Tester(args)
     tester.test()
-
-    file_write_obj = open("D:\\test_run_2.txt", 'w')
-    file_write_obj.write("Done")
 
 
 
