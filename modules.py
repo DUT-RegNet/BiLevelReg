@@ -49,7 +49,7 @@ class Pro_FeatureLearning(object):
 
                 features_mean = Conv(ndims, kernel_size=3, padding='same',
                                  kernel_initializer=RandomNormal(mean=0.0, stddev=1e-5), name='flow')(tmp)
-                # we're going to initialize the velocity variance very low, to start stable.
+                # we're going to initialize the variance very low, to start stable.
                 features_log_sigma = Conv(ndims, kernel_size=3, padding='same',
                                       kernel_initializer=RandomNormal(mean=0.0, stddev=1e-10),
                                       bias_initializer=keras.initializers.Constant(value=-10),
